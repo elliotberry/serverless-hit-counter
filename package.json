@@ -1,0 +1,16 @@
+{
+  "name": "hit-counter",
+  "version": "0.0.0",
+  "devDependencies": {
+    "wrangler": "3.51.2"
+  },
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "text-to-svg": "^3.1.5"
+  }
+}
