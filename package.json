@@ -1,9 +1,10 @@
 {
   "name": "hit-counter",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "devDependencies": {
     "wrangler": "3.51.2"
   },
+
   "type": "module",
   "private": true,
   "scripts": {
@@ -11,6 +12,6 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "text-to-svg": "^3.1.5"
+    "opentype-but-not-fucking-broken": "^0.14.0"
   }
 }
