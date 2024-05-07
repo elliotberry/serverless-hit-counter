@@ -1,4 +1,5 @@
-import TextToSVG from './text-to-svg.js';
+
+import TextToSVG from './ttsvg3.js';
 
 async function incrementCounter(env) {
   let currentValue = await env.kv.get('count');
@@ -6,7 +7,9 @@ async function incrementCounter(env) {
   if (currentValue) {
     newValue = parseInt(currentValue) + 1;
   }
+ 
   await env.kv.put('count', newValue.toString());
+  return newValue;
 }
 
 async function getCurrentCount(env) {
@@ -26,23 +29,25 @@ function renderSVG(count) {
 
 export default {
   async fetch(request, env, ctx) {
-    // Increment hit counter
-   // await incrementCounter(env);
-
-    // Get current hit count
-    //const count = await getCurrentCount(env);
-
-    const textToSVG = new TextToSVG('https://i5.walmartimages.com/dfw/63fd9f59-fc5c/2944989e-f5a8-4ad3-b44c-cf1f9af7a22c/v2/en-US/_next/static/media/ui-icons.132f6a3d.woff');
-    await textToSVG.init();
-
   
-    const svg = textToSVG.getSVG('hello');
-let g = textToSVG.getD('hello');
-console.log(g);
+     let value = await incrementCounter(env);
+
+ 
+  
+    let buffer = await env.ttf.get("test.ttf", { type: "arrayBuffer" });
+
+
+   const textToSVG = TextToSVG.loadSync(buffer);
+   
+    const attributes = {fill: 'red', stroke: 'black'};
+    const options = {x: 0, y: 0, fontSize: 72, anchor: 'top', attributes: attributes};
+     
+    const svg = textToSVG.getSVG(`${value}`, options);
+  
     // Return SVG response
     return new Response(svg, {
       headers: {
-        'Content-Type': 'text/html',
+        'Content-Type': 'image/svg+xml',
       },
     });
   },

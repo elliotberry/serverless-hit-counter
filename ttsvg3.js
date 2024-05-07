@@ -17,7 +17,7 @@ function parseAnchorOption(anchor) {
   return { horizontal, vertical };
 }
 
-export default class TextToSVG {
+class TextToSVG {
   constructor(font) {
     this.font = font;
   }
@@ -44,9 +44,8 @@ export default class TextToSVG {
 
     let width = 0;
     const glyphs = this.font.stringToGlyphs(text);
-    for (let i = 0; i < glyphs.length; i++) {
-      const glyph = glyphs[i];
 
+    glyphs.forEach((glyph, i) => {
       if (glyph.advanceWidth) {
         width += glyph.advanceWidth * fontScale;
       }
@@ -61,7 +60,8 @@ export default class TextToSVG {
       } else if (options.tracking) {
         width += (options.tracking / 1000) * fontSize;
       }
-    }
+    });
+
     return width;
   }
 
@@ -189,4 +189,4 @@ export default class TextToSVG {
   }
 }
 
-module.exports = exports.default;
+export default TextToSVG
