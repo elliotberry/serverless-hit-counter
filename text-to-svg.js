@@ -1,10 +1,10 @@
 import opentype from './ot/src/opentype.js';
-
+import calc from './calc.js';
 class TextToSVG {
   constructor(font, options = {}) {
     this.fontURL = font;
     this.font = undefined;
-    this.baseOptions = { fontSize: 42, anchor: {horizontal: 'center', vertical: 'middle'}, kerning: true, x: 0, y: 0, fontSize: 72, attributes: {fill: 'red', stroke: 'black'}};
+    this.baseOptions = {fontSize: 42, x: 0, y: 0, fontSize: 72, attributes: {fill: 'red', stroke: 'black'}};
     this.options = Object.assign({}, this.baseOptions, options);
   }
   parseAnchorOption(anchor) {
@@ -29,7 +29,6 @@ class TextToSVG {
   }
 
   getWidth(text) {
-   
     const {fontSize, kerning} = this.options;
     const fontScale = (1 / this.font.unitsPerEm) * fontSize;
 
@@ -62,17 +61,18 @@ class TextToSVG {
   }
 
   getMetrics(text) {
+    let options = this.options;
+    const fontSize = options.fontSize || 72;
+    const anchor = this.parseAnchorOption(options.anchor || '');
 
-
-    let {fontSize, anchor, x, y} = this.options;
-
-    const width = this.getWidth(text, this.options);
+    const width = this.getWidth(text, options);
     const height = this.getHeight(fontSize);
 
     const fontScale = (1 / this.font.unitsPerEm) * fontSize;
     const ascender = this.font.ascender * fontScale;
     const descender = this.font.descender * fontScale;
 
+    let x = options.x || 0;
     switch (anchor.horizontal) {
       case 'left':
         x -= 0;
@@ -87,6 +87,7 @@ class TextToSVG {
         throw new Error(`Unknown anchor option: ${anchor.horizontal}`);
     }
 
+    let y = options.y || 0;
     switch (anchor.vertical) {
       case 'baseline':
         y -= ascender;
@@ -118,22 +119,22 @@ class TextToSVG {
   }
 
   getD(text) {
-  
-
-    const {fontSize, kerning, letterSpacing, tracking} = this.options;
-    const metrics = this.getMetrics(text, this.options);
-
-    const path = this.font.getPath(text, metrics.x, metrics.baseline, fontSize, { kerning, letterSpacing, tracking });
+    let options = this.options;
+    const fontSize = options.fontSize || 72;
+    const kerning = 'kerning' in options ? options.kerning : true;
+    const letterSpacing = 'letterSpacing' in options ? options.letterSpacing : false;
+    const tracking = 'tracking' in options ? options.tracking : false;
+    const metrics = this.getMetrics(text, options);
+    const path = this.font.getPath(text, metrics.x, metrics.baseline, fontSize, {kerning, letterSpacing, tracking});
 
     return path.toPathData();
   }
-
   getPath(text) {
-   
-    const attributes = Object.keys(this.options.attributes || {})
-      .map(key => `${key}="${this.options.attributes[key]}"`)
+    let options = this.options;
+    const attributes = Object.keys(options.attributes || {})
+      .map(key => `${key}="${options.attributes[key]}"`)
       .join(' ');
-    const d = this.getD(text, this.options);
+    const d = this.getD(text, options);
 
     if (attributes) {
       return `<path ${attributes} d="${d}"/>`;
@@ -141,14 +142,12 @@ class TextToSVG {
 
     return `<path d="${d}"/>`;
   }
-
   getSVG(text) {
- 
-    const metrics = this.getMetrics(text, this.options);
-    console.log(metrics);
-    let thePath = this.getPath(text, this.options);
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${metrics.width} ${metrics.height}">${thePath}</svg>`;
-  
+    const metrics = this.getMetrics(text);
+
+    let thePath = this.getPath(text);
+
+    let svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 ${metrics.width} ${metrics.height}">${thePath}</svg>`;
 
     return svg;
   }
