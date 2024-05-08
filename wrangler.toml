@@ -1,5 +1,11 @@
 name = "hit-counter"
 main = "./index.js"
 compatibility_date = "2024-04-25"
-compatibility_flags = [ "nodejs_compat" ]
-kv_namespaces = [{ binding = "kv", id = "68c44ae520a74cf293114439baaa1f94" }, { binding = "ttf", id = "0bb756d67c804857b8195c5bf7653872" }]
+compatibility_flags = ["nodejs_compat"]
+kv_namespaces = [
+    { binding = "kv", id = "68c44ae520a74cf293114439baaa1f94" },
+    { binding = "ttf", id = "0bb756d67c804857b8195c5bf7653872" },
+]
+routes = [
+        { pattern = "hits.s0.rs", custom_domain = true }
+]
