@@ -305,6 +305,18 @@ debug@^4.3.1:
   dependencies:
     ms "2.1.2"
 
+elliotisms@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.npmjs.org/elliotisms/-/elliotisms-0.0.14.tgz#b87f733a7b1014be0ca08fa357ee2b93d683eb19"
+  integrity sha512-NEheJmioYy/dxXW3MzfFLVYpa21sQXxaje8P4xrsbF/WT7cskIPF9gJKgnJ7r4aOpV+QrVB7m1ksJukRB4uH+w==
+
+elliotisms@^0.0.16:
+  version "0.0.16"
+  resolved "https://registry.npmjs.org/elliotisms/-/elliotisms-0.0.16.tgz#3af8d546891ae04eb65b87342b5f2bce1a9d0a04"
+  integrity sha512-07dTL6KydEUEv55wU8poTBVWUDEjNU+KCfPwJzBmCgCjgu7TGaW15ya8bh8XJzXFyiavh8NNbCt9skleRXRnvw==
+  dependencies:
+    elliotisms "^0.0.14"
+
 esbuild@0.17.19:
   version "0.17.19"
   resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.17.19.tgz#087a727e98299f0462a3d0bcdd9cd7ff100bd955"

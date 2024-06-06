@@ -4,9 +4,6 @@
 
 import * as opentype from 'opentype.js';
 
-
-// Private method
-
 function parseAnchorOption(anchor) {
   let horizontal = anchor.match(/left|center|right/gi) || [];
   horizontal = horizontal.length === 0 ? 'left' : horizontal[0];
@@ -18,23 +15,9 @@ function parseAnchorOption(anchor) {
 }
 
 class TextToSVG {
-  constructor(font) {
-    this.font = font;
-  }
-
-  static loadSync(buffer) {
+  constructor(buffer) {
     let font = opentype.parse(buffer)
-    return new TextToSVG(font);
-  }
-
-  static load(url, cb) {
-    opentype.load(url, (err, font) => {
-      if (err !== null) {
-        return cb(err, null);
-      }
-
-      return cb(null, new TextToSVG(font));
-    });
+    this.font = font;
   }
 
   getWidth(text, options) {
@@ -153,40 +136,14 @@ class TextToSVG {
 
   getSVG(text, options = {}) {
     const metrics = this.getMetrics(text, options);
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${metrics.width}" height="${metrics.height}">`;
+    let svg = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${metrics.width}" height="${metrics.height}">`;
     svg += this.getPath(text, options);
     svg += '</svg>';
 
     return svg;
   }
 
-  getDebugSVG(text, options = {}) {
-    options = JSON.parse(JSON.stringify(options));
 
-    options.x = options.x || 0;
-    options.y = options.y || 0;
-    const metrics = this.getMetrics(text, options);
-    const box = {
-      width: Math.max(metrics.x + metrics.width, 0) - Math.min(metrics.x, 0),
-      height: Math.max(metrics.y + metrics.height, 0) - Math.min(metrics.y, 0),
-    };
-    const origin = {
-      x: box.width - Math.max(metrics.x + metrics.width, 0),
-      y: box.height - Math.max(metrics.y + metrics.height, 0),
-    };
-
-    // Shift text based on origin
-    options.x += origin.x;
-    options.y += origin.y;
-
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${box.width}" height="${box.height}">`;
-    svg += `<path fill="none" stroke="red" stroke-width="1" d="M0,${origin.y}L${box.width},${origin.y}"/>`; // X Axis
-    svg += `<path fill="none" stroke="red" stroke-width="1" d="M${origin.x},0L${origin.x},${box.height}"/>`; // Y Axis
-    svg += this.getPath(text, options);
-    svg += '</svg>';
-
-    return svg;
-  }
 }
 
 export default TextToSVG

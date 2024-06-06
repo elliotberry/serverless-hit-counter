@@ -1,6 +1,7 @@
 import TextToSVG from './ttsvg3.js';
-
+import getClientInfo from "elliotisms/lib/middleware/get-client-info.js";
 import {AutoRouter, cors, withParams} from 'itty-router';
+
 
 // get preflight and corsify pair
 const {preflight, corsify} = cors({
@@ -27,13 +28,19 @@ async function incrementCounter(env, key) {
 
 const makeSVG = async (text, env) => {
   let buffer = await env.ttf.get('main.ttf', {type: 'arrayBuffer'});
-  const textToSVG = TextToSVG.loadSync(buffer);
+  const textToSVG = new TextToSVG(buffer);
 
   const options = {x: 0, y: 0, fontSize: 24, anchor: 'top', attributes: {fill: 'black'}};
 
   const svg = textToSVG.getSVG(text, options);
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` + svg;
+  return svg;
 };
+
+router.all('*', getClientInfo, async function(req) {
+  if (req.clientInfo) {
+    console.log(req.clientInfo);
+  }
+});
 
 router.get('/', async (req, env, ctx) => {
   let svg = await makeSVG('Hello, World!', env);
