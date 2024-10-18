@@ -1,4 +1,7 @@
 # serverless-hit-counter
+![](https://hits.s0.rs/example)
+
+**(^this is an actual example)**
 
 ![serverless-hit-counter Logo](./logo.jpeg)
 
