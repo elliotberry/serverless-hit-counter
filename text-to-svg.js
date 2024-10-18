@@ -11,19 +11,19 @@ function parseAnchorOption(anchor) {
   let vertical = anchor.match(/baseline|top|bottom|middle/gi) || [];
   vertical = vertical.length === 0 ? 'baseline' : vertical[0];
 
-  return { horizontal, vertical };
+  return {horizontal, vertical};
 }
 
 class TextToSVG {
   constructor(buffer) {
-    let font = opentype.parse(buffer)
+    let font = opentype.parse(buffer);
     this.font = font;
   }
 
   getWidth(text, options) {
     const fontSize = options.fontSize || 72;
     const kerning = 'kerning' in options ? options.kerning : true;
-    const fontScale = 1 / this.font.unitsPerEm * fontSize;
+    const fontScale = (1 / this.font.unitsPerEm) * fontSize;
 
     let width = 0;
     const glyphs = this.font.stringToGlyphs(text);
@@ -49,7 +49,7 @@ class TextToSVG {
   }
 
   getHeight(fontSize) {
-    const fontScale = 1 / this.font.unitsPerEm * fontSize;
+    const fontScale = (1 / this.font.unitsPerEm) * fontSize;
     return (this.font.ascender - this.font.descender) * fontScale;
   }
 
@@ -60,7 +60,7 @@ class TextToSVG {
     const width = this.getWidth(text, options);
     const height = this.getHeight(fontSize);
 
-    const fontScale = 1 / this.font.unitsPerEm * fontSize;
+    const fontScale = (1 / this.font.unitsPerEm) * fontSize;
     const ascender = this.font.ascender * fontScale;
     const descender = this.font.descender * fontScale;
 
@@ -116,7 +116,7 @@ class TextToSVG {
     const letterSpacing = 'letterSpacing' in options ? options.letterSpacing : false;
     const tracking = 'tracking' in options ? options.tracking : false;
     const metrics = this.getMetrics(text, options);
-    const path = this.font.getPath(text, metrics.x, metrics.baseline, fontSize, { kerning, letterSpacing, tracking });
+    const path = this.font.getPath(text, metrics.x, metrics.baseline, fontSize, {kerning, letterSpacing, tracking});
 
     return path.toPathData();
   }
@@ -142,8 +142,6 @@ class TextToSVG {
 
     return svg;
   }
-
-
 }
 
-export default TextToSVG
+export default TextToSVG;

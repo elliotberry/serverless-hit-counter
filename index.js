@@ -1,6 +1,6 @@
-import TextToSVG from './ttsvg3.js';
-import {AutoRouter, cors, withParams} from 'itty-router';
-
+import TextToSVG from './text-to-svg.js';
+import {Router, cors, withParams} from 'itty-router';
+import fontBuffer from './font.js';
 
 // get preflight and corsify pair
 const {preflight, corsify} = cors({
@@ -8,36 +8,32 @@ const {preflight, corsify} = cors({
   allowMethods: ['GET'],
 });
 
-const router = AutoRouter({
+const router = Router({
   before: [preflight], 
   finally: [corsify],
 });
 
 async function incrementCounter(env, key) {
-  let currentValue = await env.kv.get(`${key}-count`);
-  let newValue = 1;
-  if (currentValue) {
-    newValue = parseInt(currentValue) + 1;
-  }
+  const currentValue = await env.kv.get(`${key}-count`);
+  const newValue = currentValue ? parseInt(currentValue) + 1 : 1;
 
   await env.kv.put(`${key}-count`, newValue.toString());
   return newValue;
 }
 
 const makeSVG = async (text, env) => {
-  let buffer = await env.ttf.get('main.ttf', {type: 'arrayBuffer'});
+  const buffer = fontBuffer;
   const textToSVG = new TextToSVG(buffer);
 
   const options = {x: 0, y: 0, fontSize: 24, anchor: 'top', attributes: {fill: 'black'}};
 
-  const svg = textToSVG.getSVG(text, options);
-  return svg;
+  return textToSVG.getSVG(text, options);
 };
 
 
 
 router.get('/', async (req, env, ctx) => {
-  let svg = await makeSVG('Hello, World!', env);
+  const svg = await makeSVG('Hello, World!', env);
   return new Response(svg, {
     headers: {
       'Content-Type': 'image/svg+xml',
@@ -46,10 +42,10 @@ router.get('/', async (req, env, ctx) => {
 });
 
 router.get('/:key', withParams, async (req, env, ctx) => {
-  let key = req.params.key;
-  let value = await incrementCounter(env, key);
+  const key = req.params.key;
+  const value = await incrementCounter(env, key);
 
-  let svg = await makeSVG(`${value}`, env);
+  const svg = await makeSVG(`${value}`, env);
 
   // Return SVG response
   return new Response(svg, {
