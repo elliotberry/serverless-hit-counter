@@ -1,18 +1,16 @@
 import TextToSVG from './ttsvg3.js';
-import getClientInfo from "elliotisms/lib/middleware/get-client-info.js";
 import {AutoRouter, cors, withParams} from 'itty-router';
 
 
 // get preflight and corsify pair
 const {preflight, corsify} = cors({
   origin: '*',
-
   allowMethods: ['GET'],
 });
 
 const router = AutoRouter({
-  before: [preflight], // add preflight upstream
-  finally: [corsify], // and corsify downstream
+  before: [preflight], 
+  finally: [corsify],
 });
 
 async function incrementCounter(env, key) {
@@ -36,11 +34,7 @@ const makeSVG = async (text, env) => {
   return svg;
 };
 
-router.all('*', getClientInfo, async function(req) {
-  if (req.clientInfo) {
-    console.log(req.clientInfo);
-  }
-});
+
 
 router.get('/', async (req, env, ctx) => {
   let svg = await makeSVG('Hello, World!', env);
