@@ -16,7 +16,7 @@ function parseAnchorOption(anchor) {
 
 class TextToSVG {
   constructor(buffer) {
-    this.font = opentype.parse(buffer); 
+    this.font = opentype.parse(buffer);
   }
 
   getWidth(text, options) {

@@ -1,0 +1,16 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}"
+  },
+
+  "plugins": {
+    "release-it-wrangler": {
+    }
+  },
+  "github": {
+    "release": true
+  },
+  "npm": {
+    "publish": false
+  }
+}
