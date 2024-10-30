@@ -3,7 +3,7 @@
  */
 
 import * as opentype from 'opentype.js';
-import fs from 'fs';
+
 function parseAnchorOption(anchor) {
   const horizontalMatch = anchor.match(/left|center|right/gi);
   const verticalMatch = anchor.match(/baseline|top|bottom|middle/gi);
@@ -16,9 +16,7 @@ function parseAnchorOption(anchor) {
 
 class TextToSVG {
   constructor(buffer) {
-    this.font = opentype.parse(buffer);
-
-    fs.writeFileSync('font.json', JSON.stringify(this.font));
+    this.font = opentype.parse(buffer); 
   }
 
   getWidth(text, options) {
@@ -119,6 +117,5 @@ class TextToSVG {
     return svg;
   }
 }
-import fontBuffer from './font.js';
-const textToSVG = new TextToSVG(fontBuffer);
+
 export default TextToSVG;

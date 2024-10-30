@@ -1,7 +1,7 @@
 import TextToSVG from './text-to-svg.js';
 import {Router, cors, withParams} from 'itty-router';
 import fontBuffer from './font.js';
-
+import withURLParams from './with-url-params.js';
 // get preflight and corsify pair
 const {preflight, corsify} = cors({
   origin: '*',
@@ -21,11 +21,12 @@ async function incrementCounter(env, key) {
   return newValue;
 }
 
-const makeSVG = async (text, env) => {
+const makeSVG = async (text, env, opts) => {
+  const {fontSize, fill} = opts;
   const buffer = fontBuffer;
   const textToSVG = new TextToSVG(buffer);
 
-  const options = {x: 0, y: 0, fontSize: 24, anchor: 'top', attributes: {fill: 'black'}};
+  const options = {x: 0, y: 0, fontSize: fontSize, anchor: 'top', attributes: {fill: fill}};
 
   return textToSVG.getSVG(text, options);
 };
@@ -41,11 +42,19 @@ router.get('/', async (req, env, ctx) => {
   });
 });
 
-router.get('/:key', withParams, async (req, env, ctx) => {
+router.get('/:key', withParams, withURLParams, async (req, env) => {
   const key = req.params.key;
   const value = await incrementCounter(env, key);
-
-  const svg = await makeSVG(`${value}`, env);
+  let userOpts = {};
+  let defaultOpts = {fontSize: 24, fill: 'black'};
+  if (req.paramz.size) {
+    userOpts.fontSize = req.paramz.size;
+  }
+  if (req.paramz.fill) {
+    userOpts.fill = req.paramz.fill;
+  }
+  const opts = Object.assign(defaultOpts, req.paramz);
+  const svg = await makeSVG(`${value}`, env, opts);
 
   // Return SVG response
   return new Response(svg, {
