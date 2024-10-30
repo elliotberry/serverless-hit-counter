@@ -1,6 +1,6 @@
 {
   "name": "serverless-hit-counter",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "dependencies": {
     "itty-router": "^5.0.18",
